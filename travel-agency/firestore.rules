@@ -1,0 +1,28 @@
+// firestore.rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to all users for now
+    // Restrict this further based on your application's needs
+    match /{document=**} {
+      allow read, write: if true;
+      // Example: Allow only authenticated users to read and write
+      // allow read, write: if request.auth != null;
+    }
+
+    // Example: Secure 'users' collection - only user can write to their own doc
+    // match /users/{userId} {
+    //   allow read: if true;
+    //   allow create: if request.auth != null;
+    //   allow update, delete: if request.auth != null && request.auth.uid == userId;
+    // }
+
+    // Example: Secure 'trips' collection
+    // match /trips/{tripId} {
+    //   allow read: if true; // Or more restrictive, e.g., if request.auth != null;
+    //   allow create: if request.auth != null; // Only authenticated users can create trips
+    //   // Allow update/delete only by the trip creator or an admin (add admin logic)
+    //   // allow update, delete: if request.auth != null && (request.resource.data.createdBy == request.auth.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+    // }
+  }
+}
